@@ -1,5 +1,7 @@
 import "./App.css";
 import { useState, useEffect } from "react";
+import Trie from "./Trie";
+import { words } from "./words";
 
 const keys = [
 	["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
@@ -19,7 +21,27 @@ function App() {
 	const [currentRow, setCurrentRow] = useState(0);
 	const [currentCell, setCurrentCell] = useState(0);
 	const [modalVisible, setModalVisible] = useState(false);
-	const [results, setResults] = useState([]);
+	const [results, setResults] = useState([
+		"cigar",
+		"rebut",
+		"sissy",
+		"humph",
+		"awake",
+	]);
+	const [trie, setTrie] = useState(null);
+
+	useEffect(() => {
+		// const newTrie = new Trie();
+		// for (const word of words)
+		// 	newTrie.insert(word);
+		// console.log("CONSTRUCT TRIE");
+		// setTrie(newTrie);
+		// return () => {
+		// 	for (const word of words)
+		// 		trie.remove(word);
+		// 	console.log("DESTORY TRIE");
+		// }
+	}, []);
 
 	const changeColor = (index) => {
 		if (index === currentCell && !values[currentCell]) return null;
@@ -270,14 +292,40 @@ function App() {
 			</div>
 			{/* Modal */}
 			<div
-				className="absolute top-0 h-screen w-screen"
-				style={{ backgroundColor: "#121213", display: modalVisible ? "block" : "none" }}
+				className="absolute top-0 left-0 h-screen w-screen"
+				style={{
+					backgroundColor: "rgba(64, 64, 64, 0.7)",
+					display: modalVisible ? "block" : "none",
+				}}
 			>
-				<h1>Results</h1>
-				<div>
-					{results.map((item, idx) => {
-						return <div>{item}</div>;
-					})}
+				<div className="w-full h-screen flex justify-center items-center">
+					<div
+						className="w-1/2 h-1/2 text-white text-center relative"
+						style={{ backgroundColor: "#121213" }}
+					>
+						<button className="absolute top-0 right-0 m-2" onClick={() => setModalVisible(false)}>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								className="h-6 w-6 text-white"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth={2}
+									d="M6 18L18 6M6 6l12 12"
+								/>
+							</svg>
+						</button>
+						<h1 className="text-3xl mt-2">Results</h1>
+						<div>
+							{results.slice(0, 20).map((item, idx) => {
+								return <div key={idx}>{item}</div>;
+							})}
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
