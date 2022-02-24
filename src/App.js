@@ -1,19 +1,8 @@
 import "./App.css";
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Trie from "./Trie";
-import { words } from "./words";
-
-const keys = [
-	["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
-	["a", "s", "d", "f", "g", "h", "j", "k", "l"],
-	// ["↵", "z", "x", "c", "v", "b", "n", "m", "←"],
-	["z", "x", "c", "v", "b", "n", "m"],
-];
-
-// #538d4e - green
-// #b59f3b - yellow
-// #3a3a3c - gray
-// #808384 - light gray key
+import { characters, words } from "./data";
+import { CloseIcon, HelpIcon, ResultIcon } from "./icons";
 
 function App() {
 	const [values, setValues] = useState(new Array(30).fill(""));
@@ -22,24 +11,23 @@ function App() {
 	const [currentCell, setCurrentCell] = useState(0);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [results, setResults] = useState([]);
-	// const [trie, setTrie] = useState(null);
-	const trie = useMemo(() => {
-		const newTrie = new Trie();
-		for (const word of words) newTrie.insert(word);
+	// const trie = useMemo(() => {
+	// 	const newTrie = new Trie();
+	// 	for (const word of words) newTrie.insert(word);
 
-		console.log("CONSTRUCT TRIE");
+	// 	console.log("CONSTRUCT TRIE");
 
-		return newTrie;
-	}, []);
+	// 	return newTrie;
+	// }, []);
 
-	useEffect(() => {
-		return () => {
-			for (const word of words) trie.remove(word);
+	// useEffect(() => {
+	// 	return () => {
+	// 		for (const word of words) trie.remove(word);
 
-			console.log(trie || "TRIE IS EMPTY");
-			console.log("DECONSTRUCT TRIE");
-		};
-	}, [trie]);
+	// 		console.log(trie || "TRIE IS EMPTY");
+	// 		console.log("DECONSTRUCT TRIE");
+	// 	};
+	// }, [trie]);
 
 	const changeColor = (index) => {
 		if (index === currentCell && !values[currentCell]) return null;
@@ -96,15 +84,15 @@ function App() {
 		// console.log(graySet);
 		// console.log(validList);
 		// console.log(query);
-		const trieResults = trie.search(
-			query,
-			validList,
-			greenSet,
-			yellowSet,
-			graySet
-		);
-		console.log(trieResults);
-		setResults(trieResults);
+		// const trieResults = trie.search(
+		// 	query,
+		// 	validList,
+		// 	greenSet,
+		// 	yellowSet,
+		// 	graySet
+		// );
+		// console.log(trieResults);
+		// setResults(trieResults);
 		setModalVisible(true);
 
 		setCurrentCell((previousState) => {
@@ -180,11 +168,11 @@ function App() {
 	const Cell = ({ value, cell, colorValue, index }) => {
 		const color =
 			colorValue === 0
-				? "bg-gray-600 border-gray-600"
+				? "bg-absent border-absent"
 				: colorValue === 1
-				? "bg-yellow-600 border-yellow-600"
+				? "bg-present border-present"
 				: colorValue === 2
-				? "bg-green-600 border-green-600"
+				? "bg-correct border-correct"
 				: "";
 		return (
 			<div
@@ -232,50 +220,24 @@ function App() {
 						setModalVisible(true);
 					}}
 				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						className="h-6 w-6 text-white"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth={2}
-							d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-						/>
-					</svg>
+					<ResultIcon color="text-white" />
 				</button>
 				<h1 className="text-white text-center text-3xl font-bold">
 					Wordle Helper
 				</h1>
 				<button>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						className="h-6 w-6 text-white"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth={2}
-							d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-						/>
-					</svg>
+					<HelpIcon color="text-white" />
 				</button>
 			</div>
 			<Grid />
 			<div className="text-white flex flex-col w-full items-center mb-2">
 				<div className="flex">
-					{keys[0].map((key) => (
+					{characters.top.map((key) => (
 						<KeyButton key={key} value={key} />
 					))}
 				</div>
 				<div className="flex">
-					{keys[1].map((key) => (
+					{characters.middle.map((key) => (
 						<KeyButton key={key} value={key} />
 					))}
 				</div>
@@ -286,7 +248,7 @@ function App() {
 					>
 						Enter
 					</button>
-					{keys[2].map((key) => (
+					{characters.bottom.map((key) => (
 						<KeyButton key={key} value={key} />
 					))}
 					<button
@@ -314,20 +276,7 @@ function App() {
 							className="absolute top-0 right-0 m-2"
 							onClick={() => setModalVisible(false)}
 						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								className="h-6 w-6 text-white"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth={2}
-									d="M6 18L18 6M6 6l12 12"
-								/>
-							</svg>
+							<CloseIcon color="text-white" />
 						</button>
 						<h1 className="text-3xl mt-2">Results</h1>
 						<div>

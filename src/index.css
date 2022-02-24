@@ -7,3 +7,13 @@
 	padding: 0;
 	box-sizing: border-box;
 }
+
+
+.bg-correct { background-color: #538d4e; }
+.bg-present { background-color: #b59f3b; }
+.bg-absent { background-color: #3a3a3c; }
+.bg-key { background-color: #808384; }
+
+.border-correct { border-color: #538d4e;}
+.border-present { border-color: #b59f3b; }
+.border-absent { border-color: #3a3a3c; }
