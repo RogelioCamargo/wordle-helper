@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const keys = [
 	["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
@@ -18,9 +18,8 @@ function App() {
 	const [colors, setColors] = useState(new Array(30).fill(-1));
 	const [currentRow, setCurrentRow] = useState(0);
 	const [currentCell, setCurrentCell] = useState(0);
-	const [absentSet, setAbsentSet] = useState(new Set());
-	const [presentSet, setPresentSet] = useState(new Set());
-	const [correctSet, setCorrectSet] = useState(new Set());
+	const [modalVisible, setModalVisible] = useState(false);
+	const [results, setResults] = useState([]);
 
 	const changeColor = (index) => {
 		if (index === currentCell && !values[currentCell]) return null;
@@ -41,30 +40,44 @@ function App() {
 		const graySet = new Set();
 		const yellowSet = new Set();
 		const greenSet = new Set();
+		let query = [".", ".", ".", ".", "."];
+		const validList = [];
 		for (let row = 0; row <= currentRow; row++) {
 			const start = row * 5;
+			let validQuery = "";
 			for (let j = start; j < start + 5; j++) {
 				const color = colors[j];
 				const value = values[j];
-				console.log(j);
+				// console.log(j);
 				switch (color) {
 					case 0:
 						graySet.add(value);
+						validQuery += ".";
 						break;
 					case 1:
 						yellowSet.add(value);
+						validQuery += value;
 						break;
 					case 2:
 						greenSet.add(value);
+						query[j % 5] = value;
+						validQuery += ".";
 						break;
 					default:
 						return null;
 				}
 			}
+			validList.push(validQuery);
 		}
-		setAbsentSet(graySet);
-		setPresentSet(yellowSet);
-		setCorrectSet(greenSet);
+		query = query.join("");
+		console.log(greenSet);
+		console.log(yellowSet);
+		console.log(graySet);
+		console.log(validList);
+		console.log(query);
+		// setAbsentSet(graySet);
+		// setPresentSet(yellowSet);
+		// setCorrectSet(greenSet);
 		setCurrentCell((previousState) => {
 			if (previousState === 29) return 29;
 			return previousState + 1;
@@ -76,8 +89,8 @@ function App() {
 	};
 
 	const onClickBack = () => {
-		if (currentRow && (0 === currentCell % 5)) 
-			setCurrentRow(previousState => previousState - 1);
+		if (currentRow && 0 === currentCell % 5)
+			setCurrentRow((previousState) => previousState - 1);
 		if ((currentCell + 1) % 5 === 0 && values[currentCell]) {
 			setColors((previousState) => {
 				return previousState.map((value, idx) =>
@@ -128,7 +141,7 @@ function App() {
 	const KeyButton = ({ value }) => {
 		return (
 			<button
-				className="py-4 px-3 m-0.5 bg-gray-600 rounded uppercase font-bold"
+				className="py-4 px-2.5 m-0.5 bg-gray-600 rounded uppercase font-bold"
 				onClick={() => onClickKeyButton(value)}
 			>
 				{value}
@@ -181,12 +194,50 @@ function App() {
 	};
 	return (
 		<div
-			className="bg-gray-800 h-screen flex flex-col justify-between"
+			className="bg-gray-800 h-screen flex flex-col justify-between relative"
 			style={{ backgroundColor: "#121213" }}
 		>
-			<h1 className="text-white text-center text-3xl font-bold">
-				Wordle Helper
-			</h1>
+			<div className="flex items-center justify-between px-5 py-3">
+				<button
+					onClick={() => {
+						setModalVisible(true);
+					}}
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						className="h-6 w-6 text-white"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth={2}
+							d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+						/>
+					</svg>
+				</button>
+				<h1 className="text-white text-center text-3xl font-bold">
+					Wordle Helper
+				</h1>
+				<button>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						className="h-6 w-6 text-white"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth={2}
+							d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+						/>
+					</svg>
+				</button>
+			</div>
 			<Grid />
 			<div className="text-white flex flex-col w-full items-center">
 				<div className="flex">
@@ -215,6 +266,18 @@ function App() {
 					>
 						Back
 					</button>
+				</div>
+			</div>
+			{/* Modal */}
+			<div
+				className="absolute top-0 h-screen w-screen"
+				style={{ backgroundColor: "#121213", display: modalVisible ? "block" : "none" }}
+			>
+				<h1>Results</h1>
+				<div>
+					{results.map((item, idx) => {
+						return <div>{item}</div>;
+					})}
 				</div>
 			</div>
 		</div>
