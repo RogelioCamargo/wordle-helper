@@ -11,7 +11,9 @@ class Trie {
 		this.count = 0;
 	}
 
-	getCount() { return this.count };
+	getCount() {
+		return this.count;
+	}
 
 	insert(word) {
 		const insertNode = (current, word, index) => {
@@ -36,12 +38,22 @@ class Trie {
 		this.count++;
 	}
 
-	search(query, validList, invalidSet) {
-		// ensure expression is lowercase (all words are stored in lowercase form)
-		if (query.length < 5) return null;
-		// create a regexp from invalid chars
-		const invalidRegExp = new RegExp(`[${invalidSet}]`);
+	search(query, validList, greenSet, yellowSet, invalidSet) {
 		const results = [];
+
+		const isInvalidCharacter = (char) => {
+			return (
+				(invalidSet.has(char) && !greenSet.has(char)) ||
+				(invalidSet.has(char) && !yellowSet.has(char))
+			);
+		};
+
+		const isSingleOccurring = (char) => {
+			return (
+				(invalidSet.has(char) && greenSet.has(char)) ||
+				(invalidSet.has(char) && yellowSet.has(char))
+			);
+		};
 
 		const searchNode = (current, path, index) => {
 			if (index === query.length) {
@@ -57,6 +69,14 @@ class Trie {
 					}
 				}
 
+				for (let i = 0; i < path.length; i++) {
+					const char = path[i];
+					const regex = new RegExp(`[${char}]`, "g");
+					const matches = path.match(regex);
+					console.log(matches.length);
+					if (matches.length > 1 && isSingleOccurring(char)) return null;
+				}
+
 				// if criteria is met, push path(or word) to the results array
 				results.push(path);
 				return null;
@@ -68,12 +88,12 @@ class Trie {
 				const charKeys = current.children.keys();
 				for (const charKey of charKeys) {
 					// should not go down the path of an invalid char
-					if (invalidSet && invalidRegExp.test(charKey)) continue;
+					if (!invalidSet.size && isInvalidCharacter(char)) continue;
 					const charNode = current.children.get(charKey);
 					searchNode(charNode, path + charKey, index + 1);
 				}
 			} else {
-				if (invalidSet && invalidRegExp.test(char)) return null;
+				if (!invalidSet.size && isInvalidCharacter(char)) return null;
 				const charNode = current.children.get(char);
 				if (!charNode) return null;
 				else searchNode(charNode, path + char, index + 1);

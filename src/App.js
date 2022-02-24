@@ -34,13 +34,12 @@ function App() {
 
 	useEffect(() => {
 		return () => {
-			for (const word of words) 
-				trie.remove(word);
+			for (const word of words) trie.remove(word);
 
 			console.log(trie || "TRIE IS EMPTY");
 			console.log("DECONSTRUCT TRIE");
-		}
-	}, [trie])
+		};
+	}, [trie]);
 
 	const changeColor = (index) => {
 		if (index === currentCell && !values[currentCell]) return null;
@@ -58,7 +57,8 @@ function App() {
 	const onClickEnter = () => {
 		const input = values.slice(currentRow * 5, currentRow * 5 + 5).join("");
 		if (input.length !== 5) return null;
-		let graySet = new Set();
+
+		const graySet = new Set();
 		const yellowSet = new Set();
 		const greenSet = new Set();
 		let query = [".", ".", ".", ".", "."];
@@ -90,15 +90,23 @@ function App() {
 			}
 			validList.push(validQuery);
 		}
-		graySet = Array.from(graySet).join("");
 		query = query.join("");
-		console.log(greenSet);
-		console.log(yellowSet);
-		console.log(graySet);
-		console.log(validList);
-		console.log(query);
-		const trieResults = trie.search(query, validList, graySet);
+		// console.log(greenSet);
+		// console.log(yellowSet);
+		// console.log(graySet);
+		// console.log(validList);
+		// console.log(query);
+		const trieResults = trie.search(
+			query,
+			validList,
+			greenSet,
+			yellowSet,
+			graySet
+		);
 		console.log(trieResults);
+		setResults(trieResults);
+		setModalVisible(true);
+
 		setCurrentCell((previousState) => {
 			if (previousState === 29) return 29;
 			return previousState + 1;
