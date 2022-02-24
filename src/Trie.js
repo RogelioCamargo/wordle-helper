@@ -36,14 +36,9 @@ class Trie {
 		this.count++;
 	}
 
-	search(query = ".", validSet = ".", invalidSet = "") {
+	search(query, validList, invalidSet) {
 		// ensure expression is lowercase (all words are stored in lowercase form)
-		query = query.toLowerCase();
-		if (query === ".") query = ".....";
-		if (validSet === ".") validSet = ["....."];
-
 		if (query.length < 5) return null;
-		const validList = validSet.map((set) => set.split(""));
 		// create a regexp from invalid chars
 		const invalidRegExp = new RegExp(`[${invalidSet}]`);
 		const results = [];

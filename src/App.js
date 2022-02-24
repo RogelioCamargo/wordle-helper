@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Trie from "./Trie";
 import { words } from "./words";
 
@@ -21,27 +21,26 @@ function App() {
 	const [currentRow, setCurrentRow] = useState(0);
 	const [currentCell, setCurrentCell] = useState(0);
 	const [modalVisible, setModalVisible] = useState(false);
-	const [results, setResults] = useState([
-		"cigar",
-		"rebut",
-		"sissy",
-		"humph",
-		"awake",
-	]);
-	const [trie, setTrie] = useState(null);
+	const [results, setResults] = useState([]);
+	// const [trie, setTrie] = useState(null);
+	const trie = useMemo(() => {
+		const newTrie = new Trie();
+		for (const word of words) newTrie.insert(word);
+
+		console.log("CONSTRUCT TRIE");
+
+		return newTrie;
+	}, []);
 
 	useEffect(() => {
-		// const newTrie = new Trie();
-		// for (const word of words)
-		// 	newTrie.insert(word);
-		// console.log("CONSTRUCT TRIE");
-		// setTrie(newTrie);
-		// return () => {
-		// 	for (const word of words)
-		// 		trie.remove(word);
-		// 	console.log("DESTORY TRIE");
-		// }
-	}, []);
+		return () => {
+			for (const word of words) 
+				trie.remove(word);
+
+			console.log(trie || "TRIE IS EMPTY");
+			console.log("DECONSTRUCT TRIE");
+		}
+	}, [trie])
 
 	const changeColor = (index) => {
 		if (index === currentCell && !values[currentCell]) return null;
@@ -59,7 +58,7 @@ function App() {
 	const onClickEnter = () => {
 		const input = values.slice(currentRow * 5, currentRow * 5 + 5).join("");
 		if (input.length !== 5) return null;
-		const graySet = new Set();
+		let graySet = new Set();
 		const yellowSet = new Set();
 		const greenSet = new Set();
 		let query = [".", ".", ".", ".", "."];
@@ -91,15 +90,15 @@ function App() {
 			}
 			validList.push(validQuery);
 		}
+		graySet = Array.from(graySet).join("");
 		query = query.join("");
 		console.log(greenSet);
 		console.log(yellowSet);
 		console.log(graySet);
 		console.log(validList);
 		console.log(query);
-		// setAbsentSet(graySet);
-		// setPresentSet(yellowSet);
-		// setCorrectSet(greenSet);
+		const trieResults = trie.search(query, validList, graySet);
+		console.log(trieResults);
 		setCurrentCell((previousState) => {
 			if (previousState === 29) return 29;
 			return previousState + 1;
@@ -216,7 +215,7 @@ function App() {
 	};
 	return (
 		<div
-			className="bg-gray-800 h-screen flex flex-col justify-between relative"
+			className="h-screen flex flex-col justify-between relative"
 			style={{ backgroundColor: "#121213" }}
 		>
 			<div className="flex items-center justify-between px-5 py-3">
@@ -261,7 +260,7 @@ function App() {
 				</button>
 			</div>
 			<Grid />
-			<div className="text-white flex flex-col w-full items-center">
+			<div className="text-white flex flex-col w-full items-center mb-2">
 				<div className="flex">
 					{keys[0].map((key) => (
 						<KeyButton key={key} value={key} />
@@ -294,7 +293,7 @@ function App() {
 			<div
 				className="absolute top-0 left-0 h-screen w-screen"
 				style={{
-					backgroundColor: "rgba(64, 64, 64, 0.7)",
+					backgroundColor: "#121213",
 					display: modalVisible ? "block" : "none",
 				}}
 			>
@@ -303,7 +302,10 @@ function App() {
 						className="w-1/2 h-1/2 text-white text-center relative"
 						style={{ backgroundColor: "#121213" }}
 					>
-						<button className="absolute top-0 right-0 m-2" onClick={() => setModalVisible(false)}>
+						<button
+							className="absolute top-0 right-0 m-2"
+							onClick={() => setModalVisible(false)}
+						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								className="h-6 w-6 text-white"
