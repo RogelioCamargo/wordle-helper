@@ -73,10 +73,9 @@ class Trie {
 					const char = path[i];
 					const regex = new RegExp(`[${char}]`, "g");
 					const matches = path.match(regex);
-					console.log(matches.length);
+					
 					if (matches.length > 1 && isSingleOccurring(char)) return null;
 				}
-
 				// if criteria is met, push path(or word) to the results array
 				results.push(path);
 				return null;
@@ -88,12 +87,12 @@ class Trie {
 				const charKeys = current.children.keys();
 				for (const charKey of charKeys) {
 					// should not go down the path of an invalid char
-					if (!invalidSet.size && isInvalidCharacter(char)) continue;
+					if (isInvalidCharacter(charKey)) continue;
 					const charNode = current.children.get(charKey);
 					searchNode(charNode, path + charKey, index + 1);
 				}
 			} else {
-				if (!invalidSet.size && isInvalidCharacter(char)) return null;
+				if (isInvalidCharacter(char)) return null;
 				const charNode = current.children.get(char);
 				if (!charNode) return null;
 				else searchNode(charNode, path + char, index + 1);

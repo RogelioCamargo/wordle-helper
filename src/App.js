@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import Trie from "./Trie";
 import { characters, words } from "./data";
 import { CloseIcon, HelpIcon, ResultIcon } from "./icons";
+import Modal from "./components/Modal";
 
 function App() {
 	const [values, setValues] = useState(new Array(30).fill(""));
@@ -10,24 +11,30 @@ function App() {
 	const [currentRow, setCurrentRow] = useState(0);
 	const [currentCell, setCurrentCell] = useState(0);
 	const [modalVisible, setModalVisible] = useState(false);
-	const [results, setResults] = useState([]);
-	// const trie = useMemo(() => {
-	// 	const newTrie = new Trie();
-	// 	for (const word of words) newTrie.insert(word);
+	const [results, setResults] = useState([
+		"cigar",
+		"rebut",
+		"sissy",
+		"humph",
+		"awake",
+	]);
+	const trie = useMemo(() => {
+		const newTrie = new Trie();
+		for (const word of words) newTrie.insert(word);
 
-	// 	console.log("CONSTRUCT TRIE");
+		console.log("CONSTRUCT TRIE");
 
-	// 	return newTrie;
-	// }, []);
+		return newTrie;
+	}, []);
 
-	// useEffect(() => {
-	// 	return () => {
-	// 		for (const word of words) trie.remove(word);
+	useEffect(() => {
+		return () => {
+			for (const word of words) trie.remove(word);
 
-	// 		console.log(trie || "TRIE IS EMPTY");
-	// 		console.log("DECONSTRUCT TRIE");
-	// 	};
-	// }, [trie]);
+			console.log(trie || "TRIE IS EMPTY");
+			console.log("DECONSTRUCT TRIE");
+		};
+	}, [trie]);
 
 	const changeColor = (index) => {
 		if (index === currentCell && !values[currentCell]) return null;
@@ -79,20 +86,20 @@ function App() {
 			validList.push(validQuery);
 		}
 		query = query.join("");
-		// console.log(greenSet);
-		// console.log(yellowSet);
-		// console.log(graySet);
-		// console.log(validList);
-		// console.log(query);
-		// const trieResults = trie.search(
-		// 	query,
-		// 	validList,
-		// 	greenSet,
-		// 	yellowSet,
-		// 	graySet
-		// );
-		// console.log(trieResults);
-		// setResults(trieResults);
+		console.log(greenSet);
+		console.log(yellowSet);
+		console.log(graySet);
+		console.log(validList);
+		console.log(query);
+		const trieResults = trie.search(
+			query,
+			validList,
+			greenSet,
+			yellowSet,
+			graySet
+		);
+		console.log(trieResults);
+		setResults(trieResults);
 		setModalVisible(true);
 
 		setCurrentCell((previousState) => {
@@ -260,33 +267,19 @@ function App() {
 				</div>
 			</div>
 			{/* Modal */}
-			<div
-				className="absolute top-0 left-0 h-screen w-screen"
-				style={{
-					backgroundColor: "#121213",
-					display: modalVisible ? "block" : "none",
-				}}
-			>
-				<div className="w-full h-screen flex justify-center items-center">
-					<div
-						className="w-1/2 h-1/2 text-white text-center relative"
-						style={{ backgroundColor: "#121213" }}
-					>
-						<button
-							className="absolute top-0 right-0 m-2"
-							onClick={() => setModalVisible(false)}
-						>
-							<CloseIcon color="text-white" />
-						</button>
-						<h1 className="text-3xl mt-2">Results</h1>
-						<div>
-							{results.slice(0, 20).map((item, idx) => {
-								return <div key={idx}>{item}</div>;
-							})}
-						</div>
-					</div>
+			<Modal visible={modalVisible} setVisible={setModalVisible}>
+				<h1 className="uppercase text-xl text-white">Results</h1>
+				<div className="text-white">
+					<p className="my-3">I would try the following words...</p>
+					{results.slice(0, 20).map((item, idx) => {
+						return (
+							<div key={idx} className="uppercase">
+								{item}
+							</div>
+						);
+					})}
 				</div>
-			</div>
+			</Modal>
 		</div>
 	);
 }
