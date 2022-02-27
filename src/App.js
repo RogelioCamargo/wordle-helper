@@ -12,33 +12,24 @@ function App() {
 	const [currentCell, setCurrentCell] = useState(0);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [helpModalVisible, setHelpModalVisible] = useState(false);
-	const [results, setResults] = useState([
-		"cigar",
-		"rebut",
-		"sissy",
-		"humph",
-		"awake",
-		"sissy",
-		"humph",
-		"awake",
-	]);
-	// const trie = useMemo(() => {
-	// 	const newTrie = new Trie();
-	// 	for (const word of words) newTrie.insert(word);
+	const [results, setResults] = useState([]);
+	const trie = useMemo(() => {
+		const newTrie = new Trie();
+		for (const word of words) newTrie.insert(word);
 
-	// 	console.log("CONSTRUCT TRIE");
+		console.log("CONSTRUCT TRIE");
 
-	// 	return newTrie;
-	// }, []);
+		return newTrie;
+	}, []);
 
-	// useEffect(() => {
-	// 	return () => {
-	// 		for (const word of words) trie.remove(word);
+	useEffect(() => {
+		return () => {
+			for (const word of words) trie.remove(word);
 
-	// 		console.log(trie || "TRIE IS EMPTY");
-	// 		console.log("DECONSTRUCT TRIE");
-	// 	};
-	// }, [trie]);
+			console.log(trie || "TRIE IS EMPTY");
+			console.log("DECONSTRUCT TRIE");
+		};
+	}, [trie]);
 
 	const changeColor = (index) => {
 		if (index === currentCell && !values[currentCell]) return null;
@@ -95,15 +86,15 @@ function App() {
 		console.log(graySet);
 		console.log(validList);
 		console.log(query);
-		// const trieResults = trie.search(
-		// 	query,
-		// 	validList,
-		// 	greenSet,
-		// 	yellowSet,
-		// 	graySet
-		// );
-		// console.log(trieResults);
-		// setResults(trieResults);
+		const trieResults = trie.search(
+			query,
+			validList,
+			greenSet,
+			yellowSet,
+			graySet
+		);
+		console.log(trieResults);
+		setResults(trieResults);
 		setModalVisible(true);
 
 		setCurrentCell((previousState) => {
@@ -268,8 +259,8 @@ function App() {
 				setVisible={setModalVisible}
 				title="Results"
 			>
-				<div className="grid grid-cols-5 gap-1 text-white mt-5">
-					{results.map((item, idx) => {
+				<div className="grid grid-cols-5 gap-1 text-white mt-5 max-w-lg mx-auto">
+					{results.slice(0, 100).map((item, idx) => {
 						return (
 							<div key={idx} className="uppercase text-sm text-center">
 								{item}
@@ -278,7 +269,47 @@ function App() {
 					})}
 				</div>
 			</Modal>
-			
+			{/* Help Modals */}
+			<Modal
+				visible={helpModalVisible}
+				setVisible={setHelpModalVisible}
+				title="Help"
+			>
+				<div className="text-white px-5 max-w-lg mx-auto">
+					<ol className="w-full border-b border-tile py-5">
+						<li>1. Tap tile to change the color.</li>
+						<li>2. Replicate your guess results.</li>
+						<li>3. Click enter when finished.</li>
+						<li>4. BAM. RESULTS DISPLAYED.</li>
+					</ol>
+					<div className="mt-5">
+						<span>Examples</span>
+						<div className="flex mt-5">
+							<div className="h-12 w-12 border text-white text-xl font-bold align-middle flex items-center justify-center uppercase bg-correct border-correct mr-1.5">
+								W
+							</div>
+							<div className="h-12 w-12 border text-white text-xl font-bold align-middle flex items-center justify-center uppercase border-absent bg-absent mr-1.5">
+								E
+							</div>
+							<div className="h-12 w-12 border text-white text-xl font-bold align-middle flex items-center justify-center uppercase border-absent bg-absent mr-1.5">
+								A
+							</div>
+							<div className="h-12 w-12 border text-white text-xl font-bold align-middle flex items-center justify-center uppercase border-absent bg-absent mr-1.5">
+								R
+							</div>
+							<div className="h-12 w-12 border text-white text-xl font-bold align-middle flex items-center justify-center uppercase border-absent bg-absent">
+								Y
+							</div>
+						</div>
+						<p className="mt-3">
+							If you got the result above, replicate this by typing the same
+							characters and changing the color by tapping the tile. <br />
+							Hit enter and repeat until you get the same word! <br />
+							By default, each character is gray.
+						</p>
+					</div>
+				</div>
+			</Modal>
 		</div>
 	);
 }
