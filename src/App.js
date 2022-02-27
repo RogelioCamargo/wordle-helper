@@ -1,31 +1,28 @@
 import "./App.css";
 import { useEffect, useMemo, useState } from "react";
 import Trie from "./Trie";
-import { characters, words } from "./data";
-import { HelpIcon, ResultIcon } from "./icons";
-import Modal from "./components/Modal";
-import Help from "./pages/Help";
-import Results from "./pages/Results";
-import Keyboard from "./components/Keyboard";
-import Header from "./components/Header";
+import { words } from "./data";
+import { Header, Keyboard, Modal } from "./components";
+import { Help, Results } from "./pages";
+import { prepareInput } from "./util";
 
 function App() {
 	const [values, setValues] = useState(new Array(30).fill(""));
 	const [colors, setColors] = useState(new Array(30).fill(-1));
 	const [currentRow, setCurrentRow] = useState(0);
 	const [currentCell, setCurrentCell] = useState(0);
-	const [modalVisible, setModalVisible] = useState(false);
+	const [resultsModalVisible, setResultsModalVisible] = useState(false);
 	const [helpModalVisible, setHelpModalVisible] = useState(false);
 	const [results, setResults] = useState([]);
+	// create trie
 	const trie = useMemo(() => {
 		const newTrie = new Trie();
 		for (const word of words) newTrie.insert(word);
-
 		// console.log("CONSTRUCT TRIE");
-
 		return newTrie;
 	}, []);
 
+	// destory trie upon unmount
 	useEffect(() => {
 		return () => {
 			for (const word of words) trie.remove(word);
@@ -47,57 +44,19 @@ function App() {
 	};
 
 	const onClickEnter = () => {
-		const input = values.slice(currentRow * 5, currentRow * 5 + 5).join("");
-		if (input.length !== 5) return null;
+		const word = values.slice(currentRow * 5, currentRow * 5 + 5).join("");
+		if (word.length !== 5) return null;
 
-		const graySet = new Set();
-		const yellowSet = new Set();
-		const greenSet = new Set();
-		let query = [".", ".", ".", ".", "."];
-		const validList = [];
-		for (let row = 0; row <= currentRow; row++) {
-			const start = row * 5;
-			let validQuery = "";
-			for (let j = start; j < start + 5; j++) {
-				const color = colors[j];
-				const value = values[j];
-				// console.log(j);
-				switch (color) {
-					case 0:
-						graySet.add(value);
-						validQuery += ".";
-						break;
-					case 1:
-						yellowSet.add(value);
-						validQuery += value;
-						break;
-					case 2:
-						greenSet.add(value);
-						query[j % 5] = value;
-						validQuery += ".";
-						break;
-					default:
-						return null;
-				}
-			}
-			validList.push(validQuery);
-		}
-		query = query.join("");
-		// console.log(greenSet);
-		// console.log(yellowSet);
-		// console.log(graySet);
-		// console.log(validList);
-		// console.log(query);
+		const input = prepareInput(currentRow, colors, values);
 		const trieResults = trie.search(
-			query,
-			validList,
-			greenSet,
-			yellowSet,
-			graySet
+			input.correctQuery,
+			input.validQueryList,
+			input.greenSet,
+			input.yellowSet,
+			input.graySet
 		);
-		console.log(trieResults);
 		setResults(trieResults);
-		setModalVisible(true);
+		setResultsModalVisible(true);
 
 		setCurrentCell((previousState) => {
 			if (previousState === 29) return 29;
@@ -195,7 +154,7 @@ function App() {
 	return (
 		<div className="text-white App" style={{ backgroundColor: "#121213" }}>
 			<Header
-				setResultsModalVisible={setModalVisible}
+				setResultsModalVisible={setResultsModalVisible}
 				setHelpModalVisible={setHelpModalVisible}
 			/>
 			<main className="h-game max-w-game mx-auto flex flex-col">
@@ -208,8 +167,8 @@ function App() {
 			</main>
 			{/* Results Modals */}
 			<Modal
-				visible={modalVisible}
-				setVisible={setModalVisible}
+				visible={resultsModalVisible}
+				setVisible={setResultsModalVisible}
 				title="Results"
 			>
 				<Results results={results} />
