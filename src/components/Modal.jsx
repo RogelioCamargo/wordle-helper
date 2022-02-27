@@ -9,14 +9,14 @@ const Modal = ({ children, title, visible, setVisible }) => {
 				display: visible ? "block" : "none",
 			}}
 		>
-			<header>
+			<header className="max-w-lg mx-auto relative mt-3">
 				<button
-					className="absolute top-0 right-0"
+					className="absolute top-0 right-2"
 					onClick={() => setVisible(false)}
 				>
 					<CloseIcon color="text-white" />
 				</button>
-				<h1 className="uppercase text-xl text-white text-center mt-3 font-bold">
+				<h1 className="uppercase text-xl text-white text-center font-bold">
 					{title}
 				</h1>
 			</header>

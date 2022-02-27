@@ -17,7 +17,7 @@ function App() {
 		const newTrie = new Trie();
 		for (const word of words) newTrie.insert(word);
 
-		console.log("CONSTRUCT TRIE");
+		// console.log("CONSTRUCT TRIE");
 
 		return newTrie;
 	}, []);
@@ -25,9 +25,7 @@ function App() {
 	useEffect(() => {
 		return () => {
 			for (const word of words) trie.remove(word);
-
-			console.log(trie || "TRIE IS EMPTY");
-			console.log("DECONSTRUCT TRIE");
+			// console.log("DECONSTRUCT TRIE");
 		};
 	}, [trie]);
 
@@ -81,11 +79,11 @@ function App() {
 			validList.push(validQuery);
 		}
 		query = query.join("");
-		console.log(greenSet);
-		console.log(yellowSet);
-		console.log(graySet);
-		console.log(validList);
-		console.log(query);
+		// console.log(greenSet);
+		// console.log(yellowSet);
+		// console.log(graySet);
+		// console.log(validList);
+		// console.log(query);
 		const trieResults = trie.search(
 			query,
 			validList,
