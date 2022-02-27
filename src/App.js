@@ -202,7 +202,7 @@ function App() {
 			className="h-screen flex flex-col justify-between"
 			style={{ backgroundColor: "#121213" }}
 		>
-			<header className="flex items-center justify-between px-5 py-3 border border-tile ">
+			<header className="flex items-center justify-between px-5 py-1 border-b border-tile ">
 				<button
 					onClick={() => {
 						setModalVisible(true);
@@ -210,7 +210,7 @@ function App() {
 				>
 					<ResultIcon color="text-white" />
 				</button>
-				<h1 className="text-white text-center font-serif text-3xl font-extrabold">
+				<h1 className="text-white text-center font-serif text-2xl font-extrabold">
 					Wordle Helper
 				</h1>
 				<button
