@@ -198,63 +198,58 @@ function App() {
 		);
 	};
 	return (
-		<div
-			className="text-white app"
-			style={{ backgroundColor: "#121213" }}
-		>
-			<div>
-				<header className="flex items-center justify-between px-5 py-1 border-b border-tile h-50px">
-					<button
-						onClick={() => {
-							setModalVisible(true);
-						}}
-					>
-						<ResultIcon color="text-white" />
-					</button>
-					<h1 className="text-white text-center font-serif text-2xl font-extrabold">
-						Wordle Helper
-					</h1>
-					<button
-						onClick={() => {
-							setHelpModalVisible(true);
-						}}
-					>
-						<HelpIcon color="text-white" />
-					</button>
-				</header>
-				<main className="h-game max-w-game mx-auto flex flex-col">
-					<Grid />
-					<div className="text-white h-keyboard">
-						<div className="flex justify-center mb-2 w-full">
-							{characters.top.map((key) => (
-								<KeyButton key={key} value={key} />
-							))}
-						</div>
-						<div className="flex justify-center mb-2 w-full">
-							{characters.middle.map((key) => (
-								<KeyButton key={key} value={key} />
-							))}
-						</div>
-						<div className="flex justify-center mb-2 w-full">
-							<button
-								className="py-4 w-12 mr-1.5 text-xs bg-key rounded uppercase font-bold"
-								onClick={onClickEnter}
-							>
-								Enter
-							</button>
-							{characters.bottom.map((key) => (
-								<KeyButton key={key} value={key} />
-							))}
-							<button
-								className="py-4 w-12 h-58px text-xs bg-key rounded uppercase font-bold"
-								onClick={onClickBack}
-							>
-								Back
-							</button>
-						</div>
+		<div className="text-white App" style={{ backgroundColor: "#121213" }}>
+			<header className="flex items-center justify-between px-5 py-1 border-b border-tile h-50px">
+				<button
+					onClick={() => {
+						setModalVisible(true);
+					}}
+				>
+					<ResultIcon color="text-white" />
+				</button>
+				<h1 className="text-white text-center font-serif text-2xl font-extrabold">
+					Wordle Helper
+				</h1>
+				<button
+					onClick={() => {
+						setHelpModalVisible(true);
+					}}
+				>
+					<HelpIcon color="text-white" />
+				</button>
+			</header>
+			<main className="h-game max-w-game mx-auto flex flex-col">
+				<Grid />
+				<div className="text-white h-keyboard">
+					<div className="flex justify-center mb-2 w-full">
+						{characters.top.map((key) => (
+							<KeyButton key={key} value={key} />
+						))}
 					</div>
-				</main>
-			</div>
+					<div className="flex justify-center mb-2 w-full">
+						{characters.middle.map((key) => (
+							<KeyButton key={key} value={key} />
+						))}
+					</div>
+					<div className="flex justify-center mb-2 w-full">
+						<button
+							className="py-4 w-12 mr-1.5 text-xs bg-key rounded uppercase font-bold"
+							onClick={onClickEnter}
+						>
+							Enter
+						</button>
+						{characters.bottom.map((key) => (
+							<KeyButton key={key} value={key} />
+						))}
+						<button
+							className="py-4 w-12 h-58px text-xs bg-key rounded uppercase font-bold"
+							onClick={onClickBack}
+						>
+							Back
+						</button>
+					</div>
+				</div>
+			</main>
 			{/* Results Modals */}
 			<Modal
 				visible={modalVisible}

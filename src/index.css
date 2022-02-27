@@ -9,8 +9,8 @@
 	font-family: sans-serif;
 }
 
-html, body, #app, #app>div {
-  height: 100%
+html, body, #root, .App {
+  height: 100%;
 }
 
 .bg-correct { background-color: #538d4e; }
