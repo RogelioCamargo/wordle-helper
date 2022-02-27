@@ -192,17 +192,17 @@ function App() {
 			);
 		}
 		return (
-			<div className="w-full flex items-center justify-center">
-				<div className="grid grid-cols-5 gap-1">{cells}</div>
+			<div className="flex justify-center items-center flex-grow">
+				<div className="h-board w-board grid grid-cols-5 gap-1">{cells}</div>
 			</div>
 		);
 	};
 	return (
 		<div
-			className="h-screen flex flex-col justify-between"
+			className="text-white"
 			style={{ backgroundColor: "#121213" }}
 		>
-			<header className="flex items-center justify-between px-5 py-1 border-b border-tile ">
+			<header className="flex items-center justify-between px-5 py-1 border-b border-tile h-50px">
 				<button
 					onClick={() => {
 						setModalVisible(true);
@@ -221,51 +221,57 @@ function App() {
 					<HelpIcon color="text-white" />
 				</button>
 			</header>
-			<Grid />
-			<div className="text-white flex flex-col w-full items-center">
-				<div className="flex mb-2">
-					{characters.top.map((key) => (
-						<KeyButton key={key} value={key} />
-					))}
+			<main className="h-game max-w-game mx-auto flex flex-col">
+				<Grid />
+				<div className="text-white h-keyboard">
+					<div className="flex justify-center mb-2 w-full">
+						{characters.top.map((key) => (
+							<KeyButton key={key} value={key} />
+						))}
+					</div>
+					<div className="flex justify-center mb-2 w-full">
+						{characters.middle.map((key) => (
+							<KeyButton key={key} value={key} />
+						))}
+					</div>
+					<div className="flex justify-center mb-2 w-full">
+						<button
+							className="py-4 w-12 mr-1.5 text-xs bg-key rounded uppercase font-bold"
+							onClick={onClickEnter}
+						>
+							Enter
+						</button>
+						{characters.bottom.map((key) => (
+							<KeyButton key={key} value={key} />
+						))}
+						<button
+							className="py-4 w-12 h-58px text-xs bg-key rounded uppercase font-bold"
+							onClick={onClickBack}
+						>
+							Back
+						</button>
+					</div>
 				</div>
-				<div className="flex mb-2">
-					{characters.middle.map((key) => (
-						<KeyButton key={key} value={key} />
-					))}
-				</div>
-				<div className="flex mb-2">
-					<button
-						className="py-4 w-12 mr-1.5 text-xs bg-key rounded uppercase font-bold"
-						onClick={onClickEnter}
-					>
-						Enter
-					</button>
-					{characters.bottom.map((key) => (
-						<KeyButton key={key} value={key} />
-					))}
-					<button
-						className="py-4 w-12 h-58px text-xs bg-key rounded uppercase font-bold"
-						onClick={onClickBack}
-					>
-						Back
-					</button>
-				</div>
-			</div>
+			</main>
 			{/* Results Modals */}
 			<Modal
 				visible={modalVisible}
 				setVisible={setModalVisible}
 				title="Results"
 			>
-				<div className="grid grid-cols-5 gap-1 text-white mt-5 max-w-lg mx-auto">
-					{results.slice(0, 100).map((item, idx) => {
-						return (
-							<div key={idx} className="uppercase text-sm text-center">
-								{item}
-							</div>
-						);
-					})}
-				</div>
+				{!results.length ? (
+					<div className="text-center text-lg mt-5">Enter a word first!</div>
+				) : (
+					<div className="grid grid-cols-5 gap-1 text-white mt-5 max-w-lg mx-auto">
+						{results.slice(0, 100).map((item, idx) => {
+							return (
+								<div key={idx} className="uppercase text-sm text-center">
+									{item}
+								</div>
+							);
+						})}
+					</div>
+				)}
 			</Modal>
 			{/* Help Modals */}
 			<Modal

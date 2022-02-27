@@ -6,7 +6,7 @@ const Modal = ({ children, title, visible, setVisible }) => {
 			className="absolute top-0 left-0 h-screen w-full"
 			style={{
 				backgroundColor: "#121213",
-				display: visible ? "block" : "hidden",
+				display: visible ? "block" : "none",
 			}}
 		>
 			<header className="max-w-lg mx-auto relative mt-3">
