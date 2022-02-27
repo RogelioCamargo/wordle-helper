@@ -4,6 +4,10 @@ import Trie from "./Trie";
 import { characters, words } from "./data";
 import { HelpIcon, ResultIcon } from "./icons";
 import Modal from "./components/Modal";
+import Help from "./pages/Help";
+import Results from "./pages/Results";
+import Keyboard from "./components/Keyboard";
+import Header from "./components/Header";
 
 function App() {
 	const [values, setValues] = useState(new Array(30).fill(""));
@@ -137,7 +141,7 @@ function App() {
 		}
 	};
 
-	const onClickKeyButton = (keyValue) => {
+	const onClickKey = (keyValue) => {
 		if ((currentCell + 1) % 5 === 0 && values[currentCell]) return null;
 		setValues((previousState) => {
 			return previousState.map((value, idx) =>
@@ -155,16 +159,7 @@ function App() {
 			return previousState + 1;
 		});
 	};
-	const KeyButton = ({ value }) => {
-		return (
-			<button
-				className="mr-1.5 last:mr-0 w-8 h-58px bg-key rounded uppercase font-bold"
-				onClick={() => onClickKeyButton(value)}
-			>
-				{value}
-			</button>
-		);
-	};
+
 	const Cell = ({ value, colorValue, index }) => {
 		const color =
 			colorValue === 0
@@ -199,56 +194,17 @@ function App() {
 	};
 	return (
 		<div className="text-white App" style={{ backgroundColor: "#121213" }}>
-			<header className="flex items-center justify-between px-5 py-1 border-b border-tile h-50px">
-				<button
-					onClick={() => {
-						setModalVisible(true);
-					}}
-				>
-					<ResultIcon color="text-white" />
-				</button>
-				<h1 className="text-white text-center font-serif text-2xl font-extrabold">
-					Wordle Helper
-				</h1>
-				<button
-					onClick={() => {
-						setHelpModalVisible(true);
-					}}
-				>
-					<HelpIcon color="text-white" />
-				</button>
-			</header>
+			<Header
+				setResultsModalVisible={setModalVisible}
+				setHelpModalVisible={setHelpModalVisible}
+			/>
 			<main className="h-game max-w-game mx-auto flex flex-col">
 				<Grid />
-				<div className="text-white h-keyboard">
-					<div className="flex justify-center mb-2 w-full">
-						{characters.top.map((key) => (
-							<KeyButton key={key} value={key} />
-						))}
-					</div>
-					<div className="flex justify-center mb-2 w-full">
-						{characters.middle.map((key) => (
-							<KeyButton key={key} value={key} />
-						))}
-					</div>
-					<div className="flex justify-center mb-2 w-full">
-						<button
-							className="py-4 w-12 mr-1.5 text-xs bg-key rounded uppercase font-bold"
-							onClick={onClickEnter}
-						>
-							Enter
-						</button>
-						{characters.bottom.map((key) => (
-							<KeyButton key={key} value={key} />
-						))}
-						<button
-							className="py-4 w-12 h-58px text-xs bg-key rounded uppercase font-bold"
-							onClick={onClickBack}
-						>
-							Back
-						</button>
-					</div>
-				</div>
+				<Keyboard
+					onClickBack={onClickBack}
+					onClickEnter={onClickEnter}
+					onClickKey={onClickKey}
+				/>
 			</main>
 			{/* Results Modals */}
 			<Modal
@@ -256,19 +212,7 @@ function App() {
 				setVisible={setModalVisible}
 				title="Results"
 			>
-				{!results.length ? (
-					<div className="text-center text-lg mt-5">Enter a word first!</div>
-				) : (
-					<div className="grid grid-cols-5 gap-1 text-white mt-5 max-w-lg mx-auto">
-						{results.slice(0, 100).map((item, idx) => {
-							return (
-								<div key={idx} className="uppercase text-sm text-center">
-									{item}
-								</div>
-							);
-						})}
-					</div>
-				)}
+				<Results results={results} />
 			</Modal>
 			{/* Help Modals */}
 			<Modal
@@ -276,40 +220,7 @@ function App() {
 				setVisible={setHelpModalVisible}
 				title="Help"
 			>
-				<div className="text-white px-5 max-w-lg mx-auto">
-					<ol className="w-full border-b border-tile py-5">
-						<li>1. Tap tile to change the color.</li>
-						<li>2. Replicate your guess results.</li>
-						<li>3. Click enter when finished.</li>
-						<li>4. BAM. RESULTS DISPLAYED.</li>
-					</ol>
-					<div className="mt-5">
-						<span>Examples</span>
-						<div className="flex mt-5">
-							<div className="h-12 w-12 border text-white text-xl font-bold align-middle flex items-center justify-center uppercase bg-correct border-correct mr-1.5">
-								W
-							</div>
-							<div className="h-12 w-12 border text-white text-xl font-bold align-middle flex items-center justify-center uppercase border-absent bg-absent mr-1.5">
-								E
-							</div>
-							<div className="h-12 w-12 border text-white text-xl font-bold align-middle flex items-center justify-center uppercase border-absent bg-absent mr-1.5">
-								A
-							</div>
-							<div className="h-12 w-12 border text-white text-xl font-bold align-middle flex items-center justify-center uppercase border-absent bg-absent mr-1.5">
-								R
-							</div>
-							<div className="h-12 w-12 border text-white text-xl font-bold align-middle flex items-center justify-center uppercase border-absent bg-absent">
-								Y
-							</div>
-						</div>
-						<p className="mt-3">
-							If you got the result above, replicate this by typing the same
-							characters and changing the color by tapping the tile. <br />
-							Hit enter and repeat until you get the same word! <br />
-							By default, each character is gray.
-						</p>
-					</div>
-				</div>
+				<Help />
 			</Modal>
 		</div>
 	);
