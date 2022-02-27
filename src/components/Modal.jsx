@@ -1,20 +1,25 @@
 import { CloseIcon } from "../icons";
 
-const Modal = ({ children, visible, setVisible }) => {
+const Modal = ({ children, title, visible, setVisible }) => {
 	return (
 		<div
-			className="absolute top-0 left-0 h-screen w-screen"
+			className="absolute top-0 left-0 h-screen w-full"
 			style={{
 				backgroundColor: "#121213",
 				display: visible ? "block" : "none",
 			}}
 		>
-			<button
-				className="absolute top-0 right-0"
-				onClick={() => setVisible(false)}
-			>
-				<CloseIcon color="text-white" />
-			</button>
+			<header>
+				<button
+					className="absolute top-0 right-0"
+					onClick={() => setVisible(false)}
+				>
+					<CloseIcon color="text-white" />
+				</button>
+				<h1 className="uppercase text-xl text-white text-center mt-3 font-bold">
+					{title}
+				</h1>
+			</header>
 			{children}
 		</div>
 	);

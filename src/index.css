@@ -6,14 +6,18 @@
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
+	font-family: sans-serif;
 }
 
 
 .bg-correct { background-color: #538d4e; }
 .bg-present { background-color: #b59f3b; }
 .bg-absent { background-color: #3a3a3c; }
-.bg-key { background-color: #808384; }
+.bg-key { background-color: #818384; }
 
 .border-correct { border-color: #538d4e;}
 .border-present { border-color: #b59f3b; }
 .border-absent { border-color: #3a3a3c; }
+.border-tile { border-color: #3a3a3c; }
+
+.h-58px { height: 58px; }

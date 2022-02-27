@@ -2,7 +2,7 @@ import "./App.css";
 import { useEffect, useMemo, useState } from "react";
 import Trie from "./Trie";
 import { characters, words } from "./data";
-import { CloseIcon, HelpIcon, ResultIcon } from "./icons";
+import { HelpIcon, ResultIcon } from "./icons";
 import Modal from "./components/Modal";
 
 function App() {
@@ -11,30 +11,34 @@ function App() {
 	const [currentRow, setCurrentRow] = useState(0);
 	const [currentCell, setCurrentCell] = useState(0);
 	const [modalVisible, setModalVisible] = useState(false);
+	const [helpModalVisible, setHelpModalVisible] = useState(false);
 	const [results, setResults] = useState([
 		"cigar",
 		"rebut",
 		"sissy",
 		"humph",
 		"awake",
+		"sissy",
+		"humph",
+		"awake",
 	]);
-	const trie = useMemo(() => {
-		const newTrie = new Trie();
-		for (const word of words) newTrie.insert(word);
+	// const trie = useMemo(() => {
+	// 	const newTrie = new Trie();
+	// 	for (const word of words) newTrie.insert(word);
 
-		console.log("CONSTRUCT TRIE");
+	// 	console.log("CONSTRUCT TRIE");
 
-		return newTrie;
-	}, []);
+	// 	return newTrie;
+	// }, []);
 
-	useEffect(() => {
-		return () => {
-			for (const word of words) trie.remove(word);
+	// useEffect(() => {
+	// 	return () => {
+	// 		for (const word of words) trie.remove(word);
 
-			console.log(trie || "TRIE IS EMPTY");
-			console.log("DECONSTRUCT TRIE");
-		};
-	}, [trie]);
+	// 		console.log(trie || "TRIE IS EMPTY");
+	// 		console.log("DECONSTRUCT TRIE");
+	// 	};
+	// }, [trie]);
 
 	const changeColor = (index) => {
 		if (index === currentCell && !values[currentCell]) return null;
@@ -91,15 +95,15 @@ function App() {
 		console.log(graySet);
 		console.log(validList);
 		console.log(query);
-		const trieResults = trie.search(
-			query,
-			validList,
-			greenSet,
-			yellowSet,
-			graySet
-		);
-		console.log(trieResults);
-		setResults(trieResults);
+		// const trieResults = trie.search(
+		// 	query,
+		// 	validList,
+		// 	greenSet,
+		// 	yellowSet,
+		// 	graySet
+		// );
+		// console.log(trieResults);
+		// setResults(trieResults);
 		setModalVisible(true);
 
 		setCurrentCell((previousState) => {
@@ -165,14 +169,14 @@ function App() {
 	const KeyButton = ({ value }) => {
 		return (
 			<button
-				className="py-4 px-2.5 m-0.5 bg-gray-600 rounded uppercase font-bold"
+				className="mr-1.5 last:mr-0 w-8 h-58px bg-key rounded uppercase font-bold"
 				onClick={() => onClickKeyButton(value)}
 			>
 				{value}
 			</button>
 		);
 	};
-	const Cell = ({ value, cell, colorValue, index }) => {
+	const Cell = ({ value, colorValue, index }) => {
 		const color =
 			colorValue === 0
 				? "bg-absent border-absent"
@@ -180,19 +184,13 @@ function App() {
 				? "bg-present border-present"
 				: colorValue === 2
 				? "bg-correct border-correct"
-				: "";
+				: "border-tile";
 		return (
 			<div
-				className={`border ${
-					currentCell === cell ? "border-red-600" : "border-gray-500"
-				}`}
+				className={`h-16 w-16 border-2 text-white text-3xl font-bold align-middle flex items-center justify-center uppercase ${color}`}
+				onClick={() => changeColor(index)}
 			>
-				<div
-					className={`h-14 w-14 text-white text-2xl font-bold align-middle flex items-center justify-center uppercase ${color}`}
-					onClick={() => changeColor(index)}
-				>
-					{value}
-				</div>
+				{value}
 			</div>
 		);
 	};
@@ -201,13 +199,7 @@ function App() {
 		const cells = [];
 		for (let i = 0; i < 30; i++) {
 			cells.push(
-				<Cell
-					key={i}
-					value={values[i]}
-					cell={i}
-					colorValue={colors[i]}
-					index={i}
-				/>
+				<Cell key={i} value={values[i]} colorValue={colors[i]} index={i} />
 			);
 		}
 		return (
@@ -218,10 +210,10 @@ function App() {
 	};
 	return (
 		<div
-			className="h-screen flex flex-col justify-between relative"
+			className="h-screen flex flex-col justify-between"
 			style={{ backgroundColor: "#121213" }}
 		>
-			<div className="flex items-center justify-between px-5 py-3">
+			<header className="flex items-center justify-between px-5 py-3 border border-tile ">
 				<button
 					onClick={() => {
 						setModalVisible(true);
@@ -229,28 +221,32 @@ function App() {
 				>
 					<ResultIcon color="text-white" />
 				</button>
-				<h1 className="text-white text-center text-3xl font-bold">
+				<h1 className="text-white text-center font-serif text-3xl font-extrabold">
 					Wordle Helper
 				</h1>
-				<button>
+				<button
+					onClick={() => {
+						setHelpModalVisible(true);
+					}}
+				>
 					<HelpIcon color="text-white" />
 				</button>
-			</div>
+			</header>
 			<Grid />
-			<div className="text-white flex flex-col w-full items-center mb-2">
-				<div className="flex">
+			<div className="text-white flex flex-col w-full items-center">
+				<div className="flex mb-2">
 					{characters.top.map((key) => (
 						<KeyButton key={key} value={key} />
 					))}
 				</div>
-				<div className="flex">
+				<div className="flex mb-2">
 					{characters.middle.map((key) => (
 						<KeyButton key={key} value={key} />
 					))}
 				</div>
-				<div className="flex">
+				<div className="flex mb-2">
 					<button
-						className="py-4 w-12 m-0.5 text-xs bg-gray-600 rounded uppercase font-bold"
+						className="py-4 w-12 mr-1.5 text-xs bg-key rounded uppercase font-bold"
 						onClick={onClickEnter}
 					>
 						Enter
@@ -259,27 +255,30 @@ function App() {
 						<KeyButton key={key} value={key} />
 					))}
 					<button
-						className="py-4 w-12 m-0.5 text-xs bg-gray-600 rounded uppercase font-bold"
+						className="py-4 w-12 h-58px text-xs bg-key rounded uppercase font-bold"
 						onClick={onClickBack}
 					>
 						Back
 					</button>
 				</div>
 			</div>
-			{/* Modal */}
-			<Modal visible={modalVisible} setVisible={setModalVisible}>
-				<h1 className="uppercase text-xl text-white">Results</h1>
-				<div className="text-white">
-					<p className="my-3">I would try the following words...</p>
-					{results.slice(0, 20).map((item, idx) => {
+			{/* Results Modals */}
+			<Modal
+				visible={modalVisible}
+				setVisible={setModalVisible}
+				title="Results"
+			>
+				<div className="grid grid-cols-5 gap-1 text-white mt-5">
+					{results.map((item, idx) => {
 						return (
-							<div key={idx} className="uppercase">
+							<div key={idx} className="uppercase text-sm text-center">
 								{item}
 							</div>
 						);
 					})}
 				</div>
 			</Modal>
+			
 		</div>
 	);
 }
