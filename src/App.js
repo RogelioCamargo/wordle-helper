@@ -192,7 +192,7 @@ function App() {
 			);
 		}
 		return (
-			<div className="flex justify-center items-center mt-10">
+			<div className="flex justify-center items-center flex-grow">
 				<div className="h-board w-board grid grid-cols-5 gap-1">{cells}</div>
 			</div>
 		);
@@ -223,7 +223,7 @@ function App() {
 			</header>
 			<main className="h-game max-w-game mx-auto flex flex-col">
 				<Grid />
-				<div className="text-white h-keyboard mt-10">
+				<div className="text-white h-keyboard">
 					<div className="flex justify-center mb-2 w-full">
 						{characters.top.map((key) => (
 							<KeyButton key={key} value={key} />
