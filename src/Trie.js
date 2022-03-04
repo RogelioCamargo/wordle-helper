@@ -43,8 +43,7 @@ class Trie {
 
 		const isInvalidCharacter = (char) => {
 			return (
-				(invalidSet.has(char) && !greenSet.has(char)) ||
-				(invalidSet.has(char) && !yellowSet.has(char))
+				invalidSet.has(char) && !greenSet.has(char) && !yellowSet.has(char)
 			);
 		};
 
@@ -73,7 +72,7 @@ class Trie {
 					const char = path[i];
 					const regex = new RegExp(`[${char}]`, "g");
 					const matches = path.match(regex);
-					
+
 					if (matches.length > 1 && isSingleOccurring(char)) return null;
 				}
 				// if criteria is met, push path(or word) to the results array
