@@ -4,7 +4,7 @@
 
 https://rogers-wordle-helper.herokuapp.com/
 
-Using a trie data structure with over 12,000 words, this algoritm helps you find today's word!
+Using a trie data structure that has over 12,000 words, this algoritm helps you find today's Wordle!
 
 
 ## Setup
