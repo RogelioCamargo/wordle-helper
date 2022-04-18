@@ -29,20 +29,31 @@ function App() {
 		};
 	}, [trie]);
 
-	const changeColor = (index) => {
-		if (index === currentCell && !values[currentCell]) return null;
-		if (index > currentCell) return null;
-		let colorValue = colors[index];
+	const changeColor = (selectedIndex) => {
+		// ensure cell belongs isn't empty
+		if (
+			(selectedIndex === currentCell && !values[currentCell]) ||
+			selectedIndex > currentCell
+		)
+			return null;
+		let colorValue = colors[selectedIndex];
 		if (colorValue === 2) colorValue = 0;
 		else colorValue++;
 		setColors((previousState) => {
-			return previousState.map((value, idx) =>
-				idx === index ? colorValue : value
+			return previousState.map((value, index) =>
+				index === selectedIndex ? colorValue : value
 			);
 		});
 	};
 
+	const isLastCell = (index) => index === 29;
+	const isLastCellInRow = (index) => (index + 1) % 5 === 0;
+	const isFirstCellInRow = (index) => index % 5 === 0;
+	const isOccupiedCell = (index) => values[index];
+	const isLastRow = (index) => index === 6;
+
 	const onClickEnter = () => {
+		// ensure entire row is filled
 		const word = values.slice(currentRow * 5, currentRow * 5 + 5).join("");
 		if (word.length !== 5) return null;
 
@@ -58,38 +69,39 @@ function App() {
 		resultsModalRef.current.openModal();
 
 		setCurrentCell((previousState) => {
-			if (previousState === 29) return 29;
+			if (isLastCell(previousState)) return 29;
 			return previousState + 1;
 		});
 		setCurrentRow((previousState) => {
-			if (previousState === 6) return 6;
+			if (isLastRow(previousState)) return 6;
 			return previousState + 1;
 		});
 	};
 
 	const onClickBack = () => {
-		if (currentRow && 0 === currentCell % 5)
+		const CURRENT_CELL = currentCell;
+		if (currentRow && isFirstCellInRow(CURRENT_CELL))
 			setCurrentRow((previousState) => previousState - 1);
-		if ((currentCell + 1) % 5 === 0 && values[currentCell]) {
+		if (isLastCellInRow(CURRENT_CELL) && isOccupiedCell(CURRENT_CELL)) {
 			setColors((previousState) => {
-				return previousState.map((value, idx) =>
-					idx === currentCell ? -1 : value
+				return previousState.map((value, index) =>
+					index === CURRENT_CELL ? -1 : value
 				);
 			});
 			setValues((previousState) => {
-				return previousState.map((value, idx) =>
-					idx === currentCell ? "" : value
+				return previousState.map((value, index) =>
+					index === CURRENT_CELL ? "" : value
 				);
 			});
 		} else {
 			setColors((previousState) => {
-				return previousState.map((value, idx) =>
-					idx === currentCell || idx === currentCell - 1 ? -1 : value
+				return previousState.map((value, index) =>
+					index === CURRENT_CELL || index === CURRENT_CELL - 1 ? -1 : value
 				);
 			});
 			setValues((previousState) => {
-				return previousState.map((value, idx) =>
-					idx === currentCell || idx === currentCell - 1 ? "" : value
+				return previousState.map((value, index) =>
+					index === CURRENT_CELL || index === CURRENT_CELL - 1 ? "" : value
 				);
 			});
 			setCurrentCell((previousState) => {
@@ -100,20 +112,24 @@ function App() {
 	};
 
 	const onClickKey = (keyValue) => {
-		if ((currentCell + 1) % 5 === 0 && values[currentCell]) return null;
+		// capture the current cell to ensure the correct cell is updated
+		const CURRENT_CELL = currentCell;
+		// can only go one row at a time
+		if (isLastCellInRow(CURRENT_CELL) && values[CURRENT_CELL]) return null;
+
 		setValues((previousState) => {
-			return previousState.map((value, idx) =>
-				idx === currentCell ? keyValue : value
+			return previousState.map((value, index) =>
+				index === CURRENT_CELL ? keyValue : value
 			);
 		});
 		setColors((previousState) => {
-			return previousState.map((value, idx) =>
-				idx === currentCell ? 0 : value
+			return previousState.map((value, index) =>
+				index === CURRENT_CELL ? 0 : value
 			);
 		});
 		setCurrentCell((previousState) => {
-			if ((previousState + 1) % 5 === 0) return previousState;
-			if (previousState === 29) return 29;
+			if (isLastCellInRow(previousState)) return previousState;
+			if (isLastCell(previousState)) return 29;
 			return previousState + 1;
 		});
 	};
