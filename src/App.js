@@ -1,5 +1,5 @@
 import "./App.css";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import Trie from "./Trie";
 import { words } from "./data";
 import { Header, Keyboard, Modal } from "./components";
@@ -11,9 +11,12 @@ function App() {
 	const [colors, setColors] = useState(new Array(30).fill(-1));
 	const [currentRow, setCurrentRow] = useState(0);
 	const [currentCell, setCurrentCell] = useState(0);
-	const [resultsModalVisible, setResultsModalVisible] = useState(false);
-	const [helpModalVisible, setHelpModalVisible] = useState(false);
+	// const [resultsModalVisible, setResultsModalVisible] = useState(false);
+	// const [helpModalVisible, setHelpModalVisible] = useState(false);
 	const [results, setResults] = useState([]);
+	const resultsModalRef = useRef(); 
+	const helpModalRef = useRef(); 
+
 	// create trie
 	const trie = useMemo(() => {
 		const newTrie = new Trie();
@@ -56,7 +59,7 @@ function App() {
 			input.graySet
 		);
 		setResults(trieResults);
-		setResultsModalVisible(true);
+		resultsModalRef.current.openModal();
 
 		setCurrentCell((previousState) => {
 			if (previousState === 29) return 29;
@@ -154,8 +157,8 @@ function App() {
 	return (
 		<div className="text-white App" style={{ backgroundColor: "#121213" }}>
 			<Header
-				setResultsModalVisible={setResultsModalVisible}
-				setHelpModalVisible={setHelpModalVisible}
+				openResultsModal={() => resultsModalRef.current.openModal()}
+				openHelpModal={() => helpModalRef.current.openModal()}
 			/>
 			<main className="h-game max-w-game mx-auto flex flex-col">
 				<Grid />
@@ -167,16 +170,14 @@ function App() {
 			</main>
 			{/* Results Modals */}
 			<Modal
-				visible={resultsModalVisible}
-				setVisible={setResultsModalVisible}
+				ref={resultsModalRef}
 				title="Results"
 			>
 				<Results results={results} />
 			</Modal>
 			{/* Help Modals */}
 			<Modal
-				visible={helpModalVisible}
-				setVisible={setHelpModalVisible}
+				ref={helpModalRef}
 				title="Help"
 			>
 				<Help />
