@@ -11,8 +11,6 @@ function App() {
 	const [colors, setColors] = useState(new Array(30).fill(-1));
 	const [currentRow, setCurrentRow] = useState(0);
 	const [currentCell, setCurrentCell] = useState(0);
-	// const [resultsModalVisible, setResultsModalVisible] = useState(false);
-	// const [helpModalVisible, setHelpModalVisible] = useState(false);
 	const [results, setResults] = useState([]);
 	const resultsModalRef = useRef();
 	const helpModalRef = useRef();
@@ -21,7 +19,6 @@ function App() {
 	const trie = useMemo(() => {
 		const newTrie = new Trie();
 		for (const word of words) newTrie.insert(word);
-		// console.log("CONSTRUCT TRIE");
 		return newTrie;
 	}, []);
 
@@ -29,7 +26,6 @@ function App() {
 	useEffect(() => {
 		return () => {
 			for (const word of words) trie.remove(word);
-			// console.log("DECONSTRUCT TRIE");
 		};
 	}, [trie]);
 
