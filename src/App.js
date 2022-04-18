@@ -2,7 +2,7 @@ import "./App.css";
 import { useEffect, useMemo, useState, useRef } from "react";
 import Trie from "./Trie";
 import { words } from "./data";
-import { Header, Keyboard, Modal } from "./components";
+import { Header, Keyboard, Modal, Grid } from "./components";
 import { Help, Results } from "./pages";
 import { prepareInput } from "./util";
 
@@ -137,19 +137,6 @@ function App() {
 		);
 	};
 
-	const Grid = () => {
-		const cells = [];
-		for (let i = 0; i < 30; i++) {
-			cells.push(
-				<Cell key={i} value={values[i]} colorValue={colors[i]} index={i} />
-			);
-		}
-		return (
-			<div className="flex justify-center items-center flex-grow">
-				<div className="h-board w-board grid grid-cols-5 gap-1">{cells}</div>
-			</div>
-		);
-	};
 	return (
 		<div className="text-white App" style={{ backgroundColor: "#121213" }}>
 			<Header
@@ -157,7 +144,7 @@ function App() {
 				openHelpModal={() => helpModalRef.current.openModal()}
 			/>
 			<main className="h-game max-w-game mx-auto flex flex-col">
-				<Grid />
+				<Grid Cell={Cell} values={values} colors={colors} />
 				<Keyboard
 					onClickBack={onClickBack}
 					onClickEnter={onClickEnter}
