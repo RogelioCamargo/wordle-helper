@@ -1,4 +1,3 @@
-import "./App.css";
 import { useEffect, useMemo, useState, useRef } from "react";
 import Trie from "./Trie";
 import { words } from "./data";
