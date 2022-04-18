@@ -14,8 +14,8 @@ function App() {
 	// const [resultsModalVisible, setResultsModalVisible] = useState(false);
 	// const [helpModalVisible, setHelpModalVisible] = useState(false);
 	const [results, setResults] = useState([]);
-	const resultsModalRef = useRef(); 
-	const helpModalRef = useRef(); 
+	const resultsModalRef = useRef();
+	const helpModalRef = useRef();
 
 	// create trie
 	const trie = useMemo(() => {
@@ -169,17 +169,11 @@ function App() {
 				/>
 			</main>
 			{/* Results Modals */}
-			<Modal
-				ref={resultsModalRef}
-				title="Results"
-			>
+			<Modal ref={resultsModalRef} title="Results">
 				<Results results={results} />
 			</Modal>
 			{/* Help Modals */}
-			<Modal
-				ref={helpModalRef}
-				title="Help"
-			>
+			<Modal ref={helpModalRef} title="Help">
 				<Help />
 			</Modal>
 		</div>
