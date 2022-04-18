@@ -1,8 +1,16 @@
-const Grid = ({ Cell, values, colors }) => {
+import Cell from "./Cell";
+
+const Grid = ({ values, colors, changeColor }) => {
 	const cells = [];
 	for (let i = 0; i < 30; i++) {
 		cells.push(
-			<Cell key={i} value={values[i]} colorValue={colors[i]} index={i} />
+			<Cell
+				changeColor={changeColor}
+				colorValue={colors[i]}
+				index={i}
+				key={i}
+				value={values[i]}
+			/>
 		);
 	}
 	return (
@@ -12,4 +20,4 @@ const Grid = ({ Cell, values, colors }) => {
 	);
 };
 
-export default Grid; 
+export default Grid;

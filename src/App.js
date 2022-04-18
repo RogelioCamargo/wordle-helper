@@ -118,25 +118,6 @@ function App() {
 		});
 	};
 
-	const Cell = ({ value, colorValue, index }) => {
-		const color =
-			colorValue === 0
-				? "bg-absent border-absent"
-				: colorValue === 1
-				? "bg-present border-present"
-				: colorValue === 2
-				? "bg-correct border-correct"
-				: "border-tile";
-		return (
-			<div
-				className={`h-16 w-16 border-2 text-white text-3xl font-bold align-middle flex items-center justify-center uppercase ${color}`}
-				onClick={() => changeColor(index)}
-			>
-				{value}
-			</div>
-		);
-	};
-
 	return (
 		<div className="text-white App" style={{ backgroundColor: "#121213" }}>
 			<Header
@@ -144,7 +125,7 @@ function App() {
 				openHelpModal={() => helpModalRef.current.openModal()}
 			/>
 			<main className="h-game max-w-game mx-auto flex flex-col">
-				<Grid Cell={Cell} values={values} colors={colors} />
+				<Grid values={values} colors={colors} changeColor={changeColor} />
 				<Keyboard
 					onClickBack={onClickBack}
 					onClickEnter={onClickEnter}
