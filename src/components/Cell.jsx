@@ -1,18 +1,24 @@
-const Cell = ({ changeColor, colorValue, index, value }) => {
-	const color =
-		colorValue === 0
-			? "bg-absent border-absent"
-			: colorValue === 1
-			? "bg-present border-present"
-			: colorValue === 2
-			? "bg-correct border-correct"
-			: "border-tile";
+const Cell = ({ changeColor, index, character }) => {
+	let color;
+	switch (character.color) {
+		case 1:
+			color = "bg-present border-present";
+			break;
+		case 2:
+			color = "bg-correct border-correct";
+			break;
+		default:
+			color = "bg-absent border-absent";
+	}
+
 	return (
 		<div
-			className={`h-16 w-16 border-2 text-white text-3xl font-bold align-middle flex items-center justify-center uppercase ${color}`}
+			className={`h-16 w-16 border-2 flex justify-center items-center ${color}`}
 			onClick={() => changeColor(index)}
 		>
-			{value}
+			<span className="text-3xl font-bold uppercase text-white">
+				{character.value}
+			</span>
 		</div>
 	);
 };
