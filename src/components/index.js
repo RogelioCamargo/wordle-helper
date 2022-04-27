@@ -1,6 +1,5 @@
 import Header from "./Header";
-import Keyboard from "./Keyboard";
 import Modal from "./Modal";
-import Grid from "./Grid";
+import Game from "./Game";
 
-export { Header, Keyboard, Modal, Grid };
+export { Header, Modal, Game };
