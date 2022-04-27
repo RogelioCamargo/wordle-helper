@@ -1,3 +1,4 @@
+import { prepareInput } from "./util";
 class TrieNode {
 	constructor() {
 		this.children = new Map();
@@ -38,25 +39,25 @@ class Trie {
 		this.count++;
 	}
 
-	search(query, validList, greenSet, yellowSet, invalidSet) {
+	search(values) {
+		const { correctQuery, validQueries, grays, yellows, greens } =
+			prepareInput(values);
 		const results = [];
 
 		const isInvalidCharacter = (char) => {
-			return (
-				invalidSet.has(char) && !greenSet.has(char) && !yellowSet.has(char)
-			);
+			return grays.has(char) && !greens.has(char) && !yellows.has(char);
 		};
 
 		const isSingleOccurring = (char) => {
 			return (
-				(invalidSet.has(char) && greenSet.has(char)) ||
-				(invalidSet.has(char) && yellowSet.has(char))
+				(grays.has(char) && greens.has(char)) ||
+				(grays.has(char) && yellows.has(char))
 			);
 		};
 
 		const searchNode = (current, path, index) => {
-			if (index === query.length) {
-				for (const list of validList) {
+			if (index === correctQuery.length) {
+				for (const list of validQueries) {
 					for (let idx = 0; idx < list.length; idx++) {
 						const validChar = list[idx];
 						if (validChar === ".") continue;
@@ -80,7 +81,7 @@ class Trie {
 				return null;
 			}
 
-			const char = query.charAt(index);
+			const char = correctQuery.charAt(index);
 			// "." represents any character, so must vist every path
 			if (char === ".") {
 				const charKeys = current.children.keys();
