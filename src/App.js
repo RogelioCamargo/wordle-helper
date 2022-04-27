@@ -1,8 +1,7 @@
-import "./App.css";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import Trie from "./Trie";
 import { words } from "./data";
-import { Header, Keyboard, Modal } from "./components";
+import { Header, Keyboard, Modal, Grid } from "./components";
 import { Help, Results } from "./pages";
 import { prepareInput } from "./util";
 
@@ -11,14 +10,14 @@ function App() {
 	const [colors, setColors] = useState(new Array(30).fill(-1));
 	const [currentRow, setCurrentRow] = useState(0);
 	const [currentCell, setCurrentCell] = useState(0);
-	const [resultsModalVisible, setResultsModalVisible] = useState(false);
-	const [helpModalVisible, setHelpModalVisible] = useState(false);
 	const [results, setResults] = useState([]);
+	const resultsModalRef = useRef();
+	const helpModalRef = useRef();
+
 	// create trie
 	const trie = useMemo(() => {
 		const newTrie = new Trie();
 		for (const word of words) newTrie.insert(word);
-		// console.log("CONSTRUCT TRIE");
 		return newTrie;
 	}, []);
 
@@ -26,24 +25,34 @@ function App() {
 	useEffect(() => {
 		return () => {
 			for (const word of words) trie.remove(word);
-			// console.log("DECONSTRUCT TRIE");
 		};
 	}, [trie]);
 
-	const changeColor = (index) => {
-		if (index === currentCell && !values[currentCell]) return null;
-		if (index > currentCell) return null;
-		let colorValue = colors[index];
+	const changeColor = (selectedIndex) => {
+		// ensure cell belongs isn't empty
+		if (
+			(selectedIndex === currentCell && !values[currentCell]) ||
+			selectedIndex > currentCell
+		)
+			return null;
+		let colorValue = colors[selectedIndex];
 		if (colorValue === 2) colorValue = 0;
 		else colorValue++;
 		setColors((previousState) => {
-			return previousState.map((value, idx) =>
-				idx === index ? colorValue : value
+			return previousState.map((value, index) =>
+				index === selectedIndex ? colorValue : value
 			);
 		});
 	};
 
+	const isLastCell = (index) => index === 29;
+	const isLastCellInRow = (index) => (index + 1) % 5 === 0;
+	const isFirstCellInRow = (index) => index % 5 === 0;
+	const isOccupiedCell = (index) => values[index];
+	const isLastRow = (index) => index === 6;
+
 	const onClickEnter = () => {
+		// ensure entire row is filled
 		const word = values.slice(currentRow * 5, currentRow * 5 + 5).join("");
 		if (word.length !== 5) return null;
 
@@ -56,41 +65,42 @@ function App() {
 			input.graySet
 		);
 		setResults(trieResults);
-		setResultsModalVisible(true);
+		resultsModalRef.current.openModal();
 
 		setCurrentCell((previousState) => {
-			if (previousState === 29) return 29;
+			if (isLastCell(previousState)) return 29;
 			return previousState + 1;
 		});
 		setCurrentRow((previousState) => {
-			if (previousState === 6) return 6;
+			if (isLastRow(previousState)) return 6;
 			return previousState + 1;
 		});
 	};
 
 	const onClickBack = () => {
-		if (currentRow && 0 === currentCell % 5)
+		const CURRENT_CELL = currentCell;
+		if (currentRow && isFirstCellInRow(CURRENT_CELL))
 			setCurrentRow((previousState) => previousState - 1);
-		if ((currentCell + 1) % 5 === 0 && values[currentCell]) {
+		if (isLastCellInRow(CURRENT_CELL) && isOccupiedCell(CURRENT_CELL)) {
 			setColors((previousState) => {
-				return previousState.map((value, idx) =>
-					idx === currentCell ? -1 : value
+				return previousState.map((value, index) =>
+					index === CURRENT_CELL ? -1 : value
 				);
 			});
 			setValues((previousState) => {
-				return previousState.map((value, idx) =>
-					idx === currentCell ? "" : value
+				return previousState.map((value, index) =>
+					index === CURRENT_CELL ? "" : value
 				);
 			});
 		} else {
 			setColors((previousState) => {
-				return previousState.map((value, idx) =>
-					idx === currentCell || idx === currentCell - 1 ? -1 : value
+				return previousState.map((value, index) =>
+					index === CURRENT_CELL || index === CURRENT_CELL - 1 ? -1 : value
 				);
 			});
 			setValues((previousState) => {
-				return previousState.map((value, idx) =>
-					idx === currentCell || idx === currentCell - 1 ? "" : value
+				return previousState.map((value, index) =>
+					index === CURRENT_CELL || index === CURRENT_CELL - 1 ? "" : value
 				);
 			});
 			setCurrentCell((previousState) => {
@@ -101,64 +111,36 @@ function App() {
 	};
 
 	const onClickKey = (keyValue) => {
-		if ((currentCell + 1) % 5 === 0 && values[currentCell]) return null;
+		// capture the current cell to ensure the correct cell is updated
+		const CURRENT_CELL = currentCell;
+		// can only go one row at a time
+		if (isLastCellInRow(CURRENT_CELL) && values[CURRENT_CELL]) return null;
+
 		setValues((previousState) => {
-			return previousState.map((value, idx) =>
-				idx === currentCell ? keyValue : value
+			return previousState.map((value, index) =>
+				index === CURRENT_CELL ? keyValue : value
 			);
 		});
 		setColors((previousState) => {
-			return previousState.map((value, idx) =>
-				idx === currentCell ? 0 : value
+			return previousState.map((value, index) =>
+				index === CURRENT_CELL ? 0 : value
 			);
 		});
 		setCurrentCell((previousState) => {
-			if ((previousState + 1) % 5 === 0) return previousState;
-			if (previousState === 29) return 29;
+			if (isLastCellInRow(previousState)) return previousState;
+			if (isLastCell(previousState)) return 29;
 			return previousState + 1;
 		});
 	};
 
-	const Cell = ({ value, colorValue, index }) => {
-		const color =
-			colorValue === 0
-				? "bg-absent border-absent"
-				: colorValue === 1
-				? "bg-present border-present"
-				: colorValue === 2
-				? "bg-correct border-correct"
-				: "border-tile";
-		return (
-			<div
-				className={`h-16 w-16 border-2 text-white text-3xl font-bold align-middle flex items-center justify-center uppercase ${color}`}
-				onClick={() => changeColor(index)}
-			>
-				{value}
-			</div>
-		);
-	};
-
-	const Grid = () => {
-		const cells = [];
-		for (let i = 0; i < 30; i++) {
-			cells.push(
-				<Cell key={i} value={values[i]} colorValue={colors[i]} index={i} />
-			);
-		}
-		return (
-			<div className="flex justify-center items-center flex-grow">
-				<div className="h-board w-board grid grid-cols-5 gap-1">{cells}</div>
-			</div>
-		);
-	};
 	return (
 		<div className="text-white App" style={{ backgroundColor: "#121213" }}>
 			<Header
-				setResultsModalVisible={setResultsModalVisible}
-				setHelpModalVisible={setHelpModalVisible}
+				openResultsModal={() => resultsModalRef.current.openModal()}
+				openHelpModal={() => helpModalRef.current.openModal()}
 			/>
 			<main className="h-game max-w-game mx-auto flex flex-col">
-				<Grid />
+				<Grid values={values} colors={colors} changeColor={changeColor} />
 				<Keyboard
 					onClickBack={onClickBack}
 					onClickEnter={onClickEnter}
@@ -166,19 +148,11 @@ function App() {
 				/>
 			</main>
 			{/* Results Modals */}
-			<Modal
-				visible={resultsModalVisible}
-				setVisible={setResultsModalVisible}
-				title="Results"
-			>
+			<Modal ref={resultsModalRef} title="Results">
 				<Results results={results} />
 			</Modal>
 			{/* Help Modals */}
-			<Modal
-				visible={helpModalVisible}
-				setVisible={setHelpModalVisible}
-				title="Help"
-			>
+			<Modal ref={helpModalRef} title="Help">
 				<Help />
 			</Modal>
 		</div>
