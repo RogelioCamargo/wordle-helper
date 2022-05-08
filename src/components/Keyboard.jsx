@@ -4,7 +4,7 @@ const Keyboard = ({ onClickBack, onClickEnter, onClickKey, }) => {
 	const KeyButton = ({ value }) => {
 		return (
 			<button
-				className="mr-1.5 last:mr-0 w-8 h-58px bg-key rounded uppercase font-bold"
+				className="mr-1.5 last:mr-0 flex-1 max-w-key h-58px bg-key rounded uppercase font-bold"
 				onClick={() => onClickKey(value)}
 			>
 				{value}
@@ -13,7 +13,7 @@ const Keyboard = ({ onClickBack, onClickEnter, onClickKey, }) => {
 	};
 
 	return (
-		<div className="text-white h-keyboard">
+		<div className="text-white h-keyboard px-3">
 			<div className="flex justify-center mb-2 w-full">
 				{characters.top.map((key) => (
 					<KeyButton key={key} value={key} />
