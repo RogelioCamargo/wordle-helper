@@ -24,6 +24,7 @@ html, body, #root, .App {
 .border-tile { border-color: #3a3a3c; }
 
 .w-board { width: 350px; }
+.max-w-key { max-width: 2.2rem; }
 .max-w-game { max-width: 500px; }
 
 .h-58px { height: 58px; }
