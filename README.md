@@ -15,7 +15,7 @@ npm start
 ## Technologies/Services: 
 1. Javascript
 2. React
-5. Tailwind CSS
+3. Tailwind CSS
 
 ## Screenshots
 <div style="display: flex">
