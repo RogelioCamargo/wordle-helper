@@ -14,7 +14,6 @@ export const prepareInput = (values) => {
 		let validQuery = "";
 		for (let gridCol = start; gridCol < start + 5; gridCol++) {
 			const character = values[gridCol];
-			console.log(character);
 			switch (character.color) {
 				case 0:
 					grays.add(character.value);

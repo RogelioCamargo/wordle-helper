@@ -29,7 +29,6 @@ function App() {
 		const cell = values.length - 1;
 		if (selectedIndex > cell) return null;
 
-		console.log("change color");
 		// get character's color
 		const { color } = values[selectedIndex];
 		let newColor; 
@@ -51,7 +50,6 @@ function App() {
 		// ensure entire row is filled
 		if (values.length > 0 && values.length % 5 !== 0) return null;
 
-		console.log("enter");
 		const trieResults = trie.search(values);
 		setResults(trieResults);
 		resultsModalRef.current.openModal();
