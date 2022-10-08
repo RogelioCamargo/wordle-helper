@@ -11,14 +11,19 @@ function App() {
 	const resultsModalRef = useRef();
 	const helpModalRef = useRef();
 
-	// create trie upon mount
+	// create trie on mount
 	const trie = useMemo(() => {
 		const newTrie = new Trie();
 		for (const word of words) newTrie.insert(word);
 		return newTrie;
 	}, []);
 
-	// destory trie upon unmount
+	// open help modal on mount
+	useEffect(() => {
+		helpModalRef.current.openModal(); 
+	}, []); 
+
+	// destory trie on unmount
 	useEffect(() => {
 		return () => {
 			for (const word of words) trie.remove(word);
@@ -88,7 +93,7 @@ function App() {
 				<Results results={results} />
 			</Modal>
 			{/* Help Modals */}
-			<Modal ref={helpModalRef} title="Help">
+			<Modal ref={helpModalRef} title="Instructions">
 				<Help />
 			</Modal>
 		</div>
