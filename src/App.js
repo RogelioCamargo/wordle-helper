@@ -18,11 +18,6 @@ function App() {
 		return newTrie;
 	}, []);
 
-	// open help modal on mount
-	useEffect(() => {
-		helpModalRef.current.openModal(); 
-	}, []); 
-
 	// destory trie on unmount
 	useEffect(() => {
 		return () => {
@@ -31,16 +26,14 @@ function App() {
 	}, [trie]);
 
 	const changeColor = (selectedIndex) => {
-		const cell = values.length - 1;
-		if (selectedIndex > cell) return null;
+		// can't change color of cell that is empty
+		if (selectedIndex > values.length - 1) return null;
 
-		// get character's color
+		// get current color of cell
 		const { color } = values[selectedIndex];
-		let newColor; 
-		if (color === 2) newColor = 0;
-		else newColor = color + 1;
-
-		// update color
+		
+		// update color of cell
+		let newColor = (color + 1) % 3; 
 		setValues((previousState) => {
 			return previousState.map((character, index) => {
 				if (selectedIndex === index)
@@ -52,7 +45,7 @@ function App() {
 	};
 
 	const onClickEnter = () => {
-		// ensure entire row is filled
+		// disable if row is not filled
 		if (values.length > 0 && values.length % 5 !== 0) return null;
 
 		const trieResults = trie.search(values);
@@ -61,6 +54,7 @@ function App() {
 	};
 
 	const onClickBack = () => {
+		// disable if no values are present
 		if (values.length <= 0) return null;
 
 		setValues((previousState) =>
@@ -69,6 +63,7 @@ function App() {
 	};
 
 	const onClickKey = (keyValue) => {
+		// disable if thirty values are already present
 		if (values.length >= 30) return null;
 
 		const character = new Character(keyValue);
