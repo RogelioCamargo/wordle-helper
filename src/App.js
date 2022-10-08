@@ -88,7 +88,7 @@ function App() {
 				<Results results={results} />
 			</Modal>
 			{/* Help Modals */}
-			<Modal ref={helpModalRef} title="Instructions">
+			<Modal ref={helpModalRef} title="Help">
 				<Help />
 			</Modal>
 		</div>
