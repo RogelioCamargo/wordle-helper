@@ -1,6 +1,6 @@
 # Wordle Helper
 
-This project is a Wordle solver that uses a trie data structure to efficiently find the correct word given a set of letters. Wordle is a popular word puzzle game that challenges players to guess a five-letter word in six tries.
+This project is a Wordle helper that uses a trie data structure to efficiently find the correct word given a set of letters. Wordle is a popular word puzzle game that challenges players to guess a five-letter word in six tries.
 
 ## Demo
 
