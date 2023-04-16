@@ -2,7 +2,7 @@
 
 ## Demo
 
-https://rogers-wordle-helper.herokuapp.com/
+https://rogers-wordle-helper.netlify.app/
 
 Using a trie data structure that has over 12,000 words, this algoritm helps you find today's Wordle!
 
