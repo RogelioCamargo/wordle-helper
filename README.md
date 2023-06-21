@@ -2,11 +2,10 @@
 
 This project is a Wordle helper that uses a trie data structure to efficiently find the correct word given a set of letters. Wordle is a popular word puzzle game that challenges players to guess a five-letter word in six tries.
 
-## Demo
+Using a trie data structure that has over 12,000 words, this algorithm helps you find today's Wordle!
 
-https://rogers-wordle-helper.netlify.app/
+[Live Demo](https://rogers-wordle-helper.netlify.app/)
 
-Using a trie data structure that has over 12,000 words, this algoritm helps you find today's Wordle!
 
 ## Setup
 ```
@@ -15,10 +14,10 @@ npm start
 ```
 
 ## Technologies
-- Language: JavaScript
-- Frontend: React
-- CSS Framework: Tailwind CSS
-- Data structure: Trie
+- JavaScript
+- React
+- Tailwind CSS
+- HTML5
 
 
 ## Screenshots
